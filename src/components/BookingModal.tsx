@@ -28,6 +28,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 }) => {
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [copied, setCopied] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   // Initialize booking form data
   const [formData, setFormData] = useState<BookingFormData>({
@@ -86,21 +87,38 @@ _Sent via iSmile Online Booking Assistant_`;
   };
 
   const handleNext = () => {
+    setValidationError(null);
     if (step === 3) {
       if (!formData.patientName.trim()) {
-        alert('Please enter your name.');
+        setValidationError('Please enter your full name to proceed.');
         return;
       }
       if (!formData.patientPhone.trim()) {
-        alert('Please enter your WhatsApp or phone number.');
+        setValidationError('Please enter your WhatsApp or phone number for confirmation.');
         return;
       }
     }
     setStep((prev) => Math.min(prev + 1, 4) as 1 | 2 | 3 | 4);
   };
 
-  const handleCopyMessage = () => {
-    navigator.clipboard.writeText(generatedWhatsAppMessage);
+  const handleCopyMessage = async () => {
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(generatedWhatsAppMessage);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = generatedWhatsAppMessage;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
+    } catch {
+      // Fallback
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
@@ -268,6 +286,11 @@ _Sent via iSmile Online Booking Assistant_`;
           {/* STEP 3: Enter Patient Info */}
           {step === 3 && (
             <div className="space-y-4">
+              {validationError && (
+                <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold rounded-xl">
+                  {validationError}
+                </div>
+              )}
               <div>
                 <label htmlFor="patient-name-input" className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                   Patient Full Name <span className="text-rose-500">*</span>

@@ -3,6 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          var realFetch = typeof window !== 'undefined' && window.fetch ? window.fetch.bind(window) : null;
+          var currentFetch = realFetch;
+          var descriptor = {
+            configurable: true,
+            enumerable: true,
+            get: function() {
+              return currentFetch || (typeof window !== 'undefined' && realFetch);
+            },
+            set: function(val) {
+              currentFetch = val;
+            }
+          };
+          try {
+            Object.defineProperty(window, 'fetch', descriptor);
+          } catch (e) {}
+          try {
+            if (typeof Window !== 'undefined' && Window.prototype) {
+              Object.defineProperty(Window.prototype, 'fetch', descriptor);
+            }
+          } catch (e) {}
+        } catch (err) {}
+      })();
+    </script>
     <title>iSmile Dental Clinic LLC | Top-Rated Dentist in Deira, Dubai</title>
     <meta name="description" content="Top-rated dental clinic in Deira, Dubai. 4.9★ with 1,270+ reviews. Painless dentistry, dental implants, teeth whitening, aligners, and 24/7 emergency dental care." />
     <meta property="og:title" content="iSmile Dental Clinic LLC | Deira, Dubai" />

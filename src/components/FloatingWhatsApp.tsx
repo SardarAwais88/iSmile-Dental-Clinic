@@ -13,7 +13,11 @@ export const FloatingWhatsApp: React.FC<FloatingWhatsAppProps> = ({ onOpenBookin
   const handleSendWhatsApp = (e: React.FormEvent) => {
     e.preventDefault();
     const url = `https://wa.me/${CLINIC_INFO.phoneClean}?text=${encodeURIComponent(quickMsg)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+    try {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch {
+      window.location.href = url;
+    }
     setIsOpen(false);
   };
 
