@@ -1,0 +1,6 @@
+{
+  "name": "iSmile Dental Clinic LLC",
+  "description": "Top-rated dental clinic in Deira, Dubai offering teeth whitening, implants, orthodontics, and emergency dental care with 4.9 stars and 1,270+ reviews.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
